@@ -1,0 +1,83 @@
+body {
+    font-size: 30px;
+    font-family: consolas;
+}
+
+.game-area {
+    position: relative;
+    background: linear-gradient(0deg ,rgb(45, 45, 204) 20%, rgb(109, 109, 231) 50%, rgb(49, 49, 221) 100%);
+    width: 100%;
+    height: 93vh;
+    margin:0;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.button {
+    position: relative;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+    padding: 14px 25px;
+    border-radius: 10px;
+    font-size: 1.25em;
+    cursor: pointer;
+    margin-top: 20%;
+  }
+
+.button span {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .button::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background: #46be7c;
+    border-radius: 9px;
+    transition: 0.5s;
+  }
+  
+  .button:hover::before {
+    opacity: 0.7;
+  }
+  
+  .button::after {
+    content: "";
+    position: absolute;
+    inset: 0px;
+    background: linear-gradient(45deg, #0ce39a, #69007f, #fc0987);
+    border-radius: 9px;
+    transition: 0.5s;
+    opacity: 0;
+    filter: blur(20px);
+  }
+  
+  .button:hover:after {
+    opacity: 1;
+  }
+  
+  .game-score {
+    background: rgb(76, 76, 75);
+    text-align: center;
+    font: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+
+  .hide {
+    display:block;
+  }
+  .hidden-points {
+    display: none;
+  }
+  .wizzard {
+    z-index: 100;
+    position: absolute;
+    width: 90px;
+    height: 100px;
+    background-image: url("./images/wizard.png");
+    background-size: cover;
+  }
