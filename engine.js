@@ -65,9 +65,6 @@ function gameAction(){
     scene.score++;
     gamePoints.textContent = scene.score
 
-
-
-
     wizzard.style.top = player.y + "px";
     wizzard.style.left = player.x + "px"
     window.requestAnimationFrame(gameAction)
