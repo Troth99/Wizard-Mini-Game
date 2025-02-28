@@ -13,6 +13,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+
+    overflow: hidden;
 }
 
 .button {
@@ -81,3 +83,105 @@ body {
     background-image: url("./images/wizard.png");
     background-size: cover;
   }
+
+  .wizard-shoot {
+    z-index: 100;
+    background-image: url("./images/wizard-fire.png");
+    background-size: cover;
+  }
+
+  .fire-ball {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url("./images/fire-ball.png");
+    background-size: cover;
+  }
+
+  .lighting {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background-image: url("./images/footagecrate-magic-beam-zeusa@3X.png");
+    background-size: cover;
+  }
+
+
+  #magic-bar {
+    position: absolute;
+    bottom: 60px;
+    left: 20px;
+    display: flex;;
+    gap: 20px;
+    background: transparent;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .magic-slot {
+    width: 60px;
+    height: 60px;
+    background: #333;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    border-radius: 8px;
+    transition: 0.2s;
+    position: relative;
+    padding: 5px;
+}
+
+  .magic-slot.active {
+    background: orange;
+    border-color: gold;
+}
+
+.magic-slot:hover {
+    background: #555;
+}
+.magic-slot img {
+  width: 80px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.magic-slot span {
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  font-size: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+
+#magic-bar {
+  display: none;
+}
+
+.magic-slot.cooldown {
+  pointer-events: none; 
+  opacity: 0.5; 
+  position: relative;
+}
+
+.magic-slot.cooldown::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); 
+  animation: cooldownAnim 1s linear forwards;
+}
+
+@keyframes cooldownAnim {
+  from { width: 100%; }
+  to { width: 0; }
+}
