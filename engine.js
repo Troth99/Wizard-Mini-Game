@@ -187,3 +187,7 @@ function lighting(player) {
 
     moveLighting();
 }
+
+let iceball = 0
+//to do icewall spell and fix the ccs on the div
+//add monsters health bars and damage
