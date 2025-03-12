@@ -185,3 +185,24 @@ body {
   from { width: 100%; }
   to { width: 0; }
 }
+
+.ice-ball {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background-color: lightblue;
+  background-image: url("./images/iceBall.jpg");
+  border-radius: 50%;
+  box-shadow: 0px 0px 10px #00f;
+}
+
+.bug {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-image: url("./images/bug.png");
+  background-size: cover;
+  background-color: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
