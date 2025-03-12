@@ -247,7 +247,7 @@ function lighting(player) {
         bugs.forEach((bug) => {
             if (isCollision(lighting, bug)) {
                 bug.remove();
-                lighting.remove();
+               
                 scene.score += 20;
                 gamePoints.textContent = scene.score;
             }
@@ -296,7 +296,7 @@ function iceBall(player) {
         bugs.forEach((bug) => {
             if (isCollision(iceballEl, bug)) {
                 bug.remove();
-                iceballEl.remove();
+              
                 scene.score += 15;
                 gamePoints.textContent = scene.score;
             }
