@@ -1,6 +1,9 @@
 
 let gameLoop;
 
+let playerHealth = 100;
+
+
 const gameScore = document.querySelector(".game-score")
 const gameOver = document.querySelector('.game-over');
 const gameArea = document.querySelector('.game-area');
@@ -35,12 +38,17 @@ function playingFunction(e) {
     mage.style.top = '200px'
     mage.style.left = '200px'
     spells.style.display = 'flex'
-
+    
+    mage.innerHTML = `
+    <div class="health-bar-outer">
+        <div class="health-bar-inner" id="health-bar"</div>
+    </div>
+    `
 
     gameArea.appendChild(mage);
 
 
-    window.requestAnimationFrame(gameAction)
+    gameLoop = requestAnimationFrame(gameAction);
 
 }
 
@@ -70,9 +78,15 @@ let isLightingOnCooldown = false;
 let isIceBallOnCooldown = false;
 
 function gameAction(timestamp) {
+
+    if (!gameLoop) {
+        return
+    }
+
     const wizzard = document.querySelector('.wizzard')
     const gameAreaRect = gameArea.getBoundingClientRect();
     const wizzardRect = wizzard.getBoundingClientRect()
+
     if ((keys.ArrowUp || keys.KeyW) && wizzardRect.top > gameAreaRect.top) {
         player.y -= game.speed * game.multiPly
     }
@@ -86,7 +100,7 @@ function gameAction(timestamp) {
         player.x += game.speed * game.multiPly
     }
 
-  
+
     if (keys['Digit1'] && Date.now() - lastFireballTime > fireBallCooldown && !isFireballOnCooldown) {
         isFireballOnCooldown = true
         wizzard.classList.add('wizard-shoot')
@@ -99,7 +113,7 @@ function gameAction(timestamp) {
         setTimeout(() => {
             isFireballOnCooldown = false
         }, fireBallCooldown);
-    } 
+    }
     if (keys['Digit2'] && Date.now() - lastLightingTIme > lightingCooldown && !isLightingOnCooldown) {
         isLightingOnCooldown = true
         wizzard.classList.add('wizard-shoot')
@@ -113,7 +127,7 @@ function gameAction(timestamp) {
         setTimeout(() => {
             isLightingOnCooldown = false
         }, lightingCooldown);
-    } 
+    }
     if (keys['Digit3'] && Date.now() - lastIceballTime > iceBallCooldown && !isIceBallOnCooldown) {
         isIceBallOnCooldown = true
         wizzard.classList.add('wizard-shoot')
@@ -128,11 +142,8 @@ function gameAction(timestamp) {
             isIceBallOnCooldown = false
         }, iceBallCooldown);
     }
-    scene.score++;
-    gamePoints.textContent = scene.score
+  
 
-    wizzard.style.top = player.y + "px";
-    wizzard.style.left = player.x + "px"
     if (!scene.lastBugSpawn) {
         scene.lastBugSpawn = timestamp; // Инициализиране
     }
@@ -141,24 +152,37 @@ function gameAction(timestamp) {
     if (timestamp - scene.lastBugSpawn > game.bugSpawnInterval + Math.random() * 5000) {
         let bug = document.createElement('div');
         bug.classList.add('bug');
-        
+
         bug.x = gameArea.offsetWidth - 60;
         bug.style.left = bug.x + 'px';
         bug.style.top = Math.random() * (gameArea.offsetHeight - 60) + 'px';
-    
+
         gameArea.appendChild(bug);
-        moveBug(bug); 
-    
+        moveBug(bug);
+
         scene.lastBugSpawn = timestamp;
 
     }
     document.querySelectorAll('.bug').forEach((bug) => {
         if (isCollision(wizzard, bug)) {
-            endGame(); 
+            bug.remove()
+            playerHealth -= 20;
+            updateHealthBar()
+            if (playerHealth <= 0) {
+                endGame();
+                return;
+            }
         }
     });
-    window.requestAnimationFrame(gameAction)
+
+    scene.score++;
+    gamePoints.textContent = scene.score
+
+    wizzard.style.top = player.y + "px";
+    wizzard.style.left = player.x + "px"
     
+    gameLoop = requestAnimationFrame(gameAction)
+
 }
 
 const fireballSlot = document.querySelector('.magic-slot:first-child')
@@ -188,16 +212,16 @@ function addFIreBall(player) {
     }, fireBallCooldown);
 
     function moveFireBall() {
-        if (!fireBall.parentElement) return; 
+        if (!fireBall.parentElement) return;
         fireBall.x += game.speed * 2;
         fireBall.style.left = fireBall.x + 'px';
 
-        let bugs = document.querySelectorAll('.bug'); 
+        let bugs = document.querySelectorAll('.bug');
 
         bugs.forEach((bug) => {
             if (isCollision(fireBall, bug)) {
-                bug.remove(); 
-                fireBall.remove(); 
+                bug.remove();
+                fireBall.remove();
                 scene.score += 10;
                 gamePoints.textContent = scene.score;
             }
@@ -225,7 +249,7 @@ function lighting(player) {
     const wizzard = document.querySelector('.wizzard');
     const wizzardRect = wizzard.getBoundingClientRect();
 
-    lighting.style.top = (player.y + wizzardRect.height * 0.04 )+ 'px';
+    lighting.style.top = (player.y + wizzardRect.height * 0.04) + 'px';
     lighting.x = player.x + wizzardRect.width;
     lighting.style.left = lighting.x + 'px';
 
@@ -247,7 +271,7 @@ function lighting(player) {
         bugs.forEach((bug) => {
             if (isCollision(lighting, bug)) {
                 bug.remove();
-               
+
                 scene.score += 20;
                 gamePoints.textContent = scene.score;
             }
@@ -270,7 +294,7 @@ function iceBall(player) {
 
     isIceBallOnCooldown = true;
     let iceballEl = document.createElement('div');
-    iceballEl.classList.add('ice-ball'); 
+    iceballEl.classList.add('ice-ball');
 
     const wizzard = document.querySelector('.wizzard');
     const wizzardRect = wizzard.getBoundingClientRect();
@@ -281,22 +305,22 @@ function iceBall(player) {
 
     gameArea.appendChild(iceballEl);
 
-   
+
     iceBallSlot.classList.add('cooldown');
     setTimeout(() => {
         iceBallSlot.classList.remove('cooldown');
         isIceBallOnCooldown = false;
-    }, 3000); 
+    }, 3000);
 
     function moveIceBall() {
-        iceballEl.x += game.speed * 1.5; 
+        iceballEl.x += game.speed * 1.5;
         iceballEl.style.left = iceballEl.x + 'px';
 
         let bugs = document.querySelectorAll('.bug');
         bugs.forEach((bug) => {
             if (isCollision(iceballEl, bug)) {
                 bug.remove();
-              
+
                 scene.score += 15;
                 gamePoints.textContent = scene.score;
             }
@@ -314,15 +338,17 @@ function iceBall(player) {
 
 //adding bugs
 function moveBug(bug) {
-    function step() {
-        if (!bug.parentElement) return; 
 
-        let bugSpeed = game.speed * 1.2 + scene.score * 0.0002
+    function step() {
+        if (!bug.parentElement) return;
+
+        let bugSpeed = game.speed * 1.2 + scene.score * 0.001
+
         bug.x -= bugSpeed
         bug.style.left = bug.x + "px";
 
         if (bug.x < -60) {
-            bug.remove(); 
+            bug.remove();
         } else {
             requestAnimationFrame(step);
         }
@@ -333,7 +359,7 @@ function moveBug(bug) {
 
 //collisium
 
-function isCollision(el1, el2){
+function isCollision(el1, el2) {
     let rect1 = el1.getBoundingClientRect();
     let rect2 = el2.getBoundingClientRect();
 
@@ -345,12 +371,42 @@ function isCollision(el1, el2){
 }
 
 function endGame() {
+    cancelAnimationFrame(gameLoop); 
+    gameLoop = null; 
+
     gameOver.style.display = 'block';
-    gameOver.innerHTML = "Game Over!";
+    gameOver.innerHTML = `<h2>Game Over!</h2>
+    <p>Score: ${scene.score}</p>
+    <button id="restart-btn"> Play again</button>`;
+
+    document.querySelector('.wizzard').remove();
+    document.getElementById('restart-btn').addEventListener('click', restartGame)
+}
 
 
-    document.querySelector('.wizzard').style.display = 'none';
+function restartGame(){
+    console.log('Restarting the game...')
 
- 
-    window.cancelAnimationFrame(gameAction);
+    gameOver.style.display = 'none'
+    gameScore.style.display = 'none'
+
+    scene.score = 0
+    player.x = 150;
+    player.y = 50;
+    playerHealth = 100
+
+    document.querySelectorAll('.bug').forEach(bug => bug.remove())
+    playingFunction()
+}
+
+function updateHealthBar(){
+    const bar = document.getElementById('health-bar');
+    bar.style.width = playerHealth + '%';
+
+    if (playerHealth <= 40) {
+        bar.style.backgroundColor = '#ff9800';
+    }
+    if (playerHealth <= 20) {
+        bar.style.backgroundColor = '#f44336';
+    }
 }
